@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Road to Rome",
+        "coordinates": {
+            "x": 10.0,
+            "y":5.0
+        },
+        "from": {
+            "x": 234.5,
+            "y": 132434,
+            "z": 10,
+            "name": "Venice"
+        },
+        "to": {
+            "x": 0,
+            "y": 0,
+            "z": 100,
+            "name": "Rome"
+        },
+        "distance": 25
+    }
+]
