@@ -11,7 +11,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         String filename = args[0];
         MetaHashSet<Route> collection = readFile(filename);
-        startCLI(collection, filename);
+        if (args.length == 1) {
+            startCLI(collection, filename);
+        } else if (args.length == 2) {
+            doCommands("execute_script "+"\""+args[1]+"\"", collection, filename, new ArrayDeque<>(List.of("Null", "Null", "Null", "Null", "Null")));
+        } else {
+            throw new Exception("Wrong number of arguments");
+        }
     }
 
     public static void startCLI(MetaHashSet<Route> collection, String filename) throws IOException {
@@ -89,8 +95,7 @@ public class Main {
                             break;
                         }
                         case "save": {
-                            String filename1 = filename.replace(".", "out.");
-                            writeFile(filename1, collection);
+                            writeFile(filename.replace(".", "out."), collection);
                             Main.history(m.group(1), history);
                             break;
                         }
@@ -131,7 +136,6 @@ public class Main {
                             try (Scanner scanner = new Scanner(new File(m.group(2).trim().replaceAll("^\"|\"$", "")))) {
                                 while (scanner.hasNextLine()) {
                                     String line = scanner.nextLine();
-                                    System.err.println(line);
                                     input1.append(line).append("\n");
                                 }
                             } catch (FileNotFoundException e) {
