@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+
 public class Route implements Comparable<Route>{
     private static int globalId=1;
     private int id;
@@ -65,8 +67,17 @@ public class Route implements Comparable<Route>{
     public void checkForCorrectness() throws InvalidData {
         checkForCorrectness(this);
     }
+    public void checkForCorrectness(int[] ids) throws InvalidData {
+        checkForCorrectness();
+        if (Arrays.stream(ids).anyMatch(id -> id == this.id)){
+            throw new InvalidData("id already exists");
+        }
+    }
     public int getId() {
         return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
     public String getName() {
         return name;
