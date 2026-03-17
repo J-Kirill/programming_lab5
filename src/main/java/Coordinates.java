@@ -28,4 +28,10 @@ public class Coordinates {
                 ", \"y\": " + y +
                 '}';
     }
+    public String toString(int tabs) {
+        return "{\n" +
+                "\t".repeat(tabs+1) + "\"x\": " + x +
+                ",\n" + "\t".repeat(tabs+1) + "\"y\": " + y +
+                "\n" + "\t".repeat(tabs) + "}";
+    }
 }

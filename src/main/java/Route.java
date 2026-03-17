@@ -119,4 +119,21 @@ public class Route implements Comparable<Route>{
                 this.distance +
                 "\n}";
     }
+    public String toString(int tabs){
+        return "\t".repeat(tabs) + "{\n" + "\t".repeat(tabs+1) + "\"id\": " +
+                this.id +
+                ",\n" + "\t".repeat(tabs+1) + "\"name\": " +
+                "\""+ this.name + "\"" +
+                ",\n" + "\t".repeat(tabs+1) + "\"coordinates\": " +
+                this.coordinates.toString(tabs+1) +
+                ",\n" + "\t".repeat(tabs+1) + "\"creationDate\": \"" +
+                this.creationDate.toString() +
+                "\",\n" + "\t".repeat(tabs+1) + "\"from\": " +
+                this.from.toString(tabs+1) +
+                ",\n" + "\t".repeat(tabs+1) + "\"to\": " +
+                this.to.toString(tabs+1) +
+                ",\n" + "\t".repeat(tabs+1) + "\"distance\": " +
+                this.distance +
+                "\n" + "\t".repeat(tabs) + "}";
+    }
 }

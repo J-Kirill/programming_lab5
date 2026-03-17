@@ -7,8 +7,22 @@ import tools.jackson.databind.json.JsonMapper;
 public class Main {
     public static void main(String[] args) throws Exception{
         String filename = args[0];
+        HashSet<Route> collection = readFile(filename);
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        /*while (!input.toString().endsWith(";") || scanner.hasNextLine()) {
+            input.append(scanner.nextLine());
+        }
+        String[] commands = input.toString().split(";");
+        for (String command : commands) {
+
+        }*/
+        filename = filename.replace(".", "out.");
+        writeFile(filename, collection);
+    }
+    public static HashSet<Route> readFile(String filename) throws Exception {
         StringBuilder jsonString = new StringBuilder();
-        try (Scanner scanner = new Scanner(new File(args[0]))) {
+        try (Scanner scanner = new Scanner(new File(filename))) {
             while (scanner.hasNextLine()) {
                 jsonString.append(scanner.nextLine());
             }
@@ -31,29 +45,35 @@ public class Main {
             }
         }
         HashSet<Route> collection = new HashSet<>(checkedList);
-        for (Route route : collection) {
-            System.out.println(route.toString());
-        }
-        filename = filename.replace(".", "out.");
-        writeFile(filename, collection);
+        Main.show(collection);
+        return collection;
     }
     public static void writeFile(String fileName, HashSet<Route> collection){
-        StringBuilder jsonString = new StringBuilder();
-        jsonString.append("[");
-        for (Route route : collection) {
-            jsonString.append(route.toString());
-            jsonString.append(",");
-        }
-        jsonString.deleteCharAt(jsonString.length() - 1);
-        jsonString.append("]");
+        String jsonString = Main.toString(collection);
         try{
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileName), 16384);
-            stream.write(jsonString.toString().getBytes());
+            stream.write(jsonString.getBytes());
             stream.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static String toString(HashSet<Route> collection){
+        StringBuilder out = new StringBuilder();
+        out.append("[");
+        for (Route route : collection) {
+            out.append("\n");
+            out.append(route.toString(1));
+            out.append(",");
+        }
+        out.deleteCharAt(out.length() - 1);
+        out.append("\n]");
+        return out.toString();
+    }
+    public static void show(HashSet<Route> collection){
+        String out = Main.toString(collection);
+        System.out.println(out);
     }
 }
