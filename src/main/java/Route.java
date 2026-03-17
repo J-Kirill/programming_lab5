@@ -101,6 +101,9 @@ public class Route implements Comparable<Route>{
     public int compareTo(Route o) {
         return this.getId()-o.getId();
     }
+    public float compareDistance(float distance) {
+        return this.distance-distance;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
