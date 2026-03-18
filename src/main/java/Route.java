@@ -3,6 +3,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
+/**
+ * Класс, хранящийся в коллекции.
+ */
 public class Route implements Comparable<Route>{
     private static int globalId=1;
     private int id;
@@ -38,6 +41,12 @@ public class Route implements Comparable<Route>{
         this.id = globalId++;
         this.creationDate = ZonedDateTime.now();
     }
+
+    /**
+     * Статический метод, проверяющий на корректность данные полей.
+     * @param route Проверяемый объект.
+     * @throws InvalidData Данные некорректны.
+     */
     public static void checkForCorrectness(Route route) throws InvalidData {
         if (route.getId()<1){
             throw new InvalidData("id is out of range. Something went really wrong");
@@ -64,9 +73,20 @@ public class Route implements Comparable<Route>{
             throw new InvalidData("distance is too small or negative");
         }
     }
+
+    /**
+     * Метод, проверяющий на корректность данные полей.
+     * @throws InvalidData Данные некорректны.
+     */
     public void checkForCorrectness() throws InvalidData {
         checkForCorrectness(this);
     }
+
+    /**
+     * Метод, проверяющий на корректность данные полей с учётом объектов, находящихся в коллекции.
+     * @param ids Массив id объектов коллекции.
+     * @throws InvalidData Данные некорректны.
+     */
     public void checkForCorrectness(int[] ids) throws InvalidData {
         checkForCorrectness();
         if (Arrays.stream(ids).anyMatch(id -> id == this.id)){
@@ -97,13 +117,31 @@ public class Route implements Comparable<Route>{
     public float getDistance() {
         return distance;
     }
+
+    /**
+     * Переопределённый метод для сравнения объектов.
+     * @param o Объект для сравнения.
+     * @return Возвращает разницу.
+     */
     @Override
     public int compareTo(Route o) {
         return this.getId()-o.getId();
     }
+
+    /**
+     * Метод, сравнивающий поле distance со значением.
+     * @param distance Значение distance для сравнения.
+     * @return Возвращает разницу.
+     */
     public float compareDistance(float distance) {
         return this.distance-distance;
     }
+
+    /**
+     * Метод, проверяющий равны ли объекты.
+     * @param obj   Объект для сравнения.
+     * @return boolean результата.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -115,6 +153,11 @@ public class Route implements Comparable<Route>{
     public int hashCode() {
         return Long.hashCode(this.id);
     }
+
+    /**
+     * Метод, возвращающий json представление объекта в виде строки.
+     * @return Строка - json.
+     */
     @Override
     public String toString() {
         return "{\n\"id\": " +
@@ -133,6 +176,11 @@ public class Route implements Comparable<Route>{
                 this.distance +
                 "\n}";
     }
+    /**
+     * Метод, возвращающий json представление объекта в виде строки с табуляцией.
+     * @param tabs Количество отступов.
+     * @return Строка - json.
+     */
     public String toString(int tabs){
         return "\t".repeat(tabs) + "{\n" + "\t".repeat(tabs+1) + "\"id\": " +
                 this.id +

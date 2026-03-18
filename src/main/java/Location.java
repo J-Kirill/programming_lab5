@@ -1,3 +1,6 @@
+/**
+ * Класс, хранящийся в объектах класса Route.
+ */
 public class Location {
     private double x;
     private Float y;
@@ -16,6 +19,10 @@ public class Location {
         this.z = 0.0;
         this.name = "";
     }
+    /**
+     * Метод, проверяющий данные полей на корректность.
+     * @throws InvalidData Данные некорректны.
+     */
     public void checkForCorrectness() throws InvalidData {
         if (y==null){
             throw new InvalidData("y is null");
@@ -39,6 +46,10 @@ public class Location {
     public String getName() {
         return name;
     }
+    /**
+     * Метод, возвращающий json представление объекта в виде строки.
+     * @return Строка - json.
+     */
     @Override
     public String toString() {
         return "{" +
@@ -47,6 +58,11 @@ public class Location {
                 ", \"z\": " + z +
                 ", \"name\": " + "\""+ name + "\"}";
     }
+    /**
+     * Метод, возвращающий json представление объекта в виде строки с табуляцией.
+     * @param tabs Количество отступов.
+     * @return Строка - json.
+     */
     public String toString(int tabs) {
         return "{\n" +
                 "\t".repeat(tabs+1) + "\"x\": " + x +

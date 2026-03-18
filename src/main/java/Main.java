@@ -7,19 +7,36 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 
+/**
+ * Класс, управляющий коллекцией, все методы статические.
+ */
 public class Main {
+    /**
+     * Метод запускающий выполнение программы, выбирая способ запуска по количеству аргументов, читает файл.
+     * @param args Аргументы командной строки.
+     * @throws Exception Возникла ошибка.
+     */
     public static void main(String[] args) throws Exception {
         String filename = args[0];
         MetaHashSet<Route> collection = readFile(filename);
         if (args.length == 1) {
             startCLI(collection, filename);
         } else if (args.length == 2) {
-            doCommands("execute_script "+"\""+args[1]+"\"", collection, filename, new ArrayDeque<>(List.of("Null", "Null", "Null", "Null", "Null")));
-        } else {
+            startCLI(collection, args[1]);
+        } else if (args.length == 3) {
+            doCommands("execute_script "+"\""+args[2]+"\"", collection, args[1], new ArrayDeque<>(List.of("Null", "Null", "Null", "Null", "Null")));
+        }
+        else {
             throw new Exception("Wrong number of arguments");
         }
     }
 
+    /**
+     * Метод, запускающий CLI, изменяет коллекцию из файла.
+     * @param collection Коллекция.
+     * @param filename Путь для записи файла.
+     * @throws IOException Ошибка ввода/вывода.
+     */
     public static void startCLI(MetaHashSet<Route> collection, String filename) throws IOException {
         System.out.println("Type \"help\" for a list of available commands");
         Scanner scanner = new Scanner(System.in);
@@ -35,6 +52,13 @@ public class Main {
         }
     }
 
+    /**
+     * Метод, реализующий команды CLI.
+     * @param input Строка с командами для исполнения.
+     * @param collection Коллекция.
+     * @param filename Путь для записи файлов.
+     * @param history Параметр для реализации команды history.
+     */
     public static void doCommands(String input, MetaHashSet<Route> collection, String filename, Deque<String> history) {
         String[] commands = input.split(";");
         Pattern p = Pattern.compile(
@@ -95,7 +119,7 @@ public class Main {
                             break;
                         }
                         case "save": {
-                            writeFile(filename.replace(".", "out."), collection);
+                            writeFile(filename, collection);
                             Main.history(m.group(1), history);
                             break;
                         }
@@ -198,6 +222,12 @@ public class Main {
         }
     }
 
+    /**
+     * Метод, читающий файл по пути.
+     * @param filename Путь файла.
+     * @return Возвращает коллекцию.
+     * @throws Exception Ошибка при чтении.
+     */
     public static MetaHashSet<Route> readFile(String filename) throws Exception {
         StringBuilder jsonString = new StringBuilder();
         try (Scanner scanner = new Scanner(new File(filename))) {
@@ -226,6 +256,12 @@ public class Main {
         return new MetaHashSet<>(Route.class, checkedList);
     }
 
+    /**
+     * Метод, сравнивающий элемент с каждым элементом коллекции. Использует метод compareTo сравниваемых объектов.
+     * @param collection Коллекция.
+     * @param route Сравниваемый элемент.
+     * @return Возвращает массив полученных результатов.
+     */
     public static int[] compareTo(Collection<Route> collection, Route route) {
         int[] vals = new int[collection.size()];
         int i = 0;
@@ -235,6 +271,11 @@ public class Main {
         return vals;
     }
 
+    /**
+     * Метод, возвращающий массив со значениями id элементов коллекции.
+     * @param collection Коллекция.
+     * @return Массив со значениями id.
+     */
     public static int[] getIds(Collection<Route> collection) {
         int[] ids = new int[collection.size()];
         int i = 0;
@@ -244,6 +285,12 @@ public class Main {
         return ids;
     }
 
+    /**
+     * Метод, реализующий парсинг строки в объект.
+     * @param jsonObj Строка на входе.
+     * @return Объект, типа Route.
+     * @throws InvalidData Данные некорректны.
+     */
     public static Route getObjectFromString(String jsonObj) throws InvalidData {
         JsonMapper mapper = JsonMapper.builder()
                 .disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
@@ -254,6 +301,11 @@ public class Main {
         return route;
     }
 
+    /**
+     * Метод, добавляющий в коллекцию объект из строки.
+     * @param jsonObj Строка на входе.
+     * @param collection Коллекция.
+     */
     public static void addObject(String jsonObj, MetaHashSet<Route> collection) {
         try {
             Route route = getObjectFromString(jsonObj);
@@ -264,6 +316,11 @@ public class Main {
         }
     }
 
+    /**
+     * Метод, записывающий коллекцию в файл.
+     * @param fileName Путь для записи.
+     * @param collection Коллекция.
+     */
     public static void writeFile(String fileName, MetaHashSet<Route> collection) {
         String jsonString = Main.toString(collection);
         try {
@@ -277,6 +334,11 @@ public class Main {
         }
     }
 
+    /**
+     * Метод, реализующий отображение коллекции как json строку.
+     * @param collection Коллекция.
+     * @return Строка - json.
+     */
     public static String toString(MetaHashSet<Route> collection) {
         StringBuilder out = new StringBuilder();
         out.append("[");
@@ -290,16 +352,30 @@ public class Main {
         return out.toString();
     }
 
+    /**
+     * Метод, отображающий коллекцию в терминал.
+     * @param collection Коллекция.
+     */
     public static void show(MetaHashSet<Route> collection) {
         String out = Main.toString(collection);
         System.out.println(out);
     }
 
+    /**
+     * Метод, реализующий CLI команду history.
+     * @param command Последняя команда.
+     * @param history Deque объект с предыдущими командами.
+     */
     public static void history(String command, Deque<String> history) {
         history.removeLast();
         history.addFirst(command);
     }
 
+    /**
+     * Класс - композиция HashSet для хранения метаинформации о коллекции.
+     * Все методы MetaHashSet работают, вызывая внутри методы HashSet, кроме get для метаинформации.
+     * @param <E> Тип хранимых объектов.
+     */
     public static class MetaHashSet<E> implements Set<E> {
         private final HashSet<E> delegate;
         private final Class<E> type;
