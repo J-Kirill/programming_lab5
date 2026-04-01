@@ -1,33 +1,54 @@
+package common.stored;
+
+import common.InvalidData;
+
 /**
- * Класс, хранящийся в объектах класса Route.
+ * Класс, хранящийся в объектах класса common.stored.Route.
  */
-public class Coordinates {
-    private Double x;
-    private float y;
-    public Coordinates(Double x, Float y) throws InvalidData {
+public class Location {
+    private double x;
+    private Float y;
+    private Double z;
+    private String name;
+    public Location (double x, Float y, Double z, String name)  throws InvalidData {
         this.x = x;
         this.y = y;
+        this.z = z;
+        this.name = name;
         checkForCorrectness();
     }
-    public Coordinates() {
+    public Location(){
         this.x = 0.0;
         this.y = 0.0F;
+        this.z = 0.0;
+        this.name = "";
     }
-
     /**
      * Метод, проверяющий данные полей на корректность.
      * @throws InvalidData Данные некорректны.
      */
     public void checkForCorrectness() throws InvalidData {
-        if (x>128){
-            throw new InvalidData("x is out of limit");
+        if (y==null){
+            throw new InvalidData("y is null");
+        }
+        if (z==null){
+            throw new InvalidData("z is null");
+        }
+        if (name==null || name.isEmpty()){
+            throw new InvalidData("name is empty");
         }
     }
-    public Double getX() {
+    public double getX() {
         return x;
     }
-    public float getY() {
+    public Float getY() {
         return y;
+    }
+    public Double getZ() {
+        return z;
+    }
+    public String getName() {
+        return name;
     }
     /**
      * Метод, возвращающий json представление объекта в виде строки.
@@ -38,7 +59,8 @@ public class Coordinates {
         return "{" +
                 "\"x\": " + x +
                 ", \"y\": " + y +
-                '}';
+                ", \"z\": " + z +
+                ", \"name\": " + "\""+ name + "\"}";
     }
     /**
      * Метод, возвращающий json представление объекта в виде строки с табуляцией.
@@ -49,6 +71,8 @@ public class Coordinates {
         return "{\n" +
                 "\t".repeat(tabs+1) + "\"x\": " + x +
                 ",\n" + "\t".repeat(tabs+1) + "\"y\": " + y +
-                "\n" + "\t".repeat(tabs) + "}";
+                ",\n" + "\t".repeat(tabs+1) + "\"z\": " + z +
+                ",\n" + "\t".repeat(tabs+1) + "\"name\": " + "\""+ name + "\"\n" +
+                "\t".repeat(tabs) + "}";
     }
 }

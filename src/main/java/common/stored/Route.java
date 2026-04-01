@@ -1,4 +1,9 @@
-import com.fasterxml.jackson.annotation.JsonCreator;
+package common.stored;
+
+import common.InvalidData;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -197,5 +202,21 @@ public class Route implements Comparable<Route>{
                 ",\n" + "\t".repeat(tabs+1) + "\"distance\": " +
                 this.distance +
                 "\n" + "\t".repeat(tabs) + "}";
+    }
+    /**
+     * Метод, реализующий парсинг строки в объект.
+     *
+     * @param jsonObj Строка на входе.
+     * @return Объект, типа Route.
+     * @throws InvalidData Данные некорректны.
+     */
+    public static Route getObjectFromString(String jsonObj) throws InvalidData {
+        JsonMapper mapper = JsonMapper.builder()
+                .disable(DateTimeFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+                .build();
+        Route route = mapper.readValue(jsonObj, new TypeReference<>() {
+        });
+        route.checkForCorrectness();
+        return route;
     }
 }
