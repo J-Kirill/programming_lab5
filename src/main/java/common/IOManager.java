@@ -1,6 +1,5 @@
 package common;
 
-import common.commands.Command;
 import common.stored.Route;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.cfg.DateTimeFeature;
@@ -74,17 +73,16 @@ public class IOManager {
      * @throws IOException Ошибка ввода/вывода.
      */
     public static void startCLI(MetaHashSet<Route> collection, String filename) throws IOException {
-        System.out.println("Type \"help;\" for a list of available commands");
-        Deque<String> history = new ArrayDeque<>(List.of("Null", "Null", "Null", "Null", "Null"));
+        System.out.println("Type \"help\" for a list of available commands");
         Scanner scanner = new Scanner(System.in);
         while (true) {
             StringBuilder input = new StringBuilder();
             String line;
             do {
                 line = scanner.nextLine();
-                input.append(line).append("\n");
-            } while (!line.endsWith(";") || System.in.available() > 0);
-            new Command(collection, filename, history).doCommands(input.toString());
+                input.append(line).append(" ");
+            } while (System.in.available() > 0);
+            CommandManager.doCommand(input.toString());
         }
     }
 }
